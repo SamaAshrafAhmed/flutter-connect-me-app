@@ -1,6 +1,6 @@
 import 'package:connectme_app/domain/entities/user.dart';
 
-class UserModel extends User {
+class UserModel extends UserEntity {
   new({
     required super.id,
     required super.fullName,

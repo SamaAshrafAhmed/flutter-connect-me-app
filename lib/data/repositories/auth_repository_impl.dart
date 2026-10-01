@@ -9,9 +9,9 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthService _authService;
   final FirestoreService _firestoreService;
   new(this._authService, this._firestoreService);
+  
   @override
-  @override
-  User? getCurrentUser() {
+  UserEntity? getCurrentUser() {
     final firebaseUser = _authService.currentUser;
 
     if (firebaseUser == null) {
@@ -25,7 +25,10 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<User> login({required String email, required String password}) async {
+  Future<UserEntity> login({
+    required String email,
+    required String password,
+  }) async {
     final credential = await _authService.login(
       email: email,
       password: password,
@@ -34,7 +37,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (firebaseUser == null) {
       throw Exception("Login Failed!");
     } else {
-      User user = UserBuilder()
+      UserEntity user = UserBuilder()
           .setId(firebaseUser.uid)
           .setEmail(firebaseUser.email ?? email)
           .build();
@@ -55,7 +58,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<User> signUp({
+  Future<UserEntity> signUp({
     required String fullName,
     required String email,
     required String password,
@@ -68,7 +71,7 @@ class AuthRepositoryImpl implements AuthRepository {
     if (firebaseUser == null) {
       throw Exception("Sign Up Failed!");
     } else {
-      User user = UserBuilder()
+      UserEntity user = UserBuilder()
           .setId(firebaseUser.uid)
           .setEmail(firebaseUser.email ?? email)
           .setFullName(fullName)
