@@ -11,7 +11,8 @@ biometric authentication protects access to profile details.
 - Sign-up validation for name, email, password, and password confirmation.
 - Realtime Firestore community feed with post creation and friendly error states.
 - Biometric gate before opening the profile.
-- Gallery/camera profile image selection and Firebase Storage upload.
+- Gallery/camera profile image selection stored as compressed Base64 data in
+  the user's Firestore document.
 - Device model and operating system information via `device_info_plus`.
 - Community map with member markers and info windows.
 - Responsive layouts using `MediaQuery` and scrollable forms.
@@ -52,7 +53,7 @@ Design patterns are applied deliberately:
 1. Install Flutter (Dart 3.13 or newer) and configure a Firebase project.
 2. Run `flutterfire configure` to generate `lib/firebase_options.dart` and
    the native Firebase configuration files for your project.
-3. Enable Email/Password Authentication, Firestore, and Firebase Storage.
+3. Enable Email/Password Authentication and Cloud Firestore.
 4. Add a Google Maps API key:
 
    ```bash
@@ -63,6 +64,7 @@ Design patterns are applied deliberately:
    Restrict the key to the Android package and Maps SDK for Android in Google
    Cloud Console. Configure the equivalent key in `ios/Runner/AppDelegate.swift`
    before an iOS build.
+
 5. Install dependencies and validate the project:
 
    ```bash
@@ -113,17 +115,37 @@ commit service-account keys or API keys to Git.
    emails, and the invitation status. Each tester should accept the invitation,
    install the Firebase App Tester app, and install the release on a physical
    Android device.
-5. For the final submission, add the following evidence under
-   `docs/screenshots/` and link it here:
 
-   - `login.png` and `signup.png`
-   - `home-feed.png`
-   - `biometric-prompt.png`
-   - `profile.png`
-   - `community-map.png`
-   - `app-distribution.png`
-   - `tester-invitation.png`
+## Screenshots
 
-The repository intentionally does not contain tester email addresses, API
-keys, or distribution screenshots. Those are environment-specific release
-evidence and must be captured from the delivery Firebase project.
+### Login
+
+![ConnectMe login screen](docs/screenshots/login.png)
+
+### Sign up
+
+![ConnectMe sign-up screen](docs/screenshots/sign_up.png)
+
+### Home feed
+
+![ConnectMe home feed](docs/screenshots/home_feed.png)
+
+### Biometric profile gate
+
+![ConnectMe biometric authentication prompt](docs/screenshots/biometric.png)
+
+### Profile
+
+![ConnectMe profile screen](docs/screenshots/profile.png)
+
+### Community map
+
+![ConnectMe community map](docs/screenshots/google_map.png)
+
+### App Distribution
+
+![ConnectMe App Distribution](docs/screenshots/app-distribution.png)
+
+### Testers Invitiations
+
+![ConnectMe Testers Invitations](docs/screenshots/tester-invitation.png)

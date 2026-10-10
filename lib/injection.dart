@@ -5,7 +5,6 @@ import 'package:connectme_app/domain/usecases/get_profile.dart';
 import 'package:connectme_app/domain/usecases/update_profile_image.dart';
 import 'package:connectme_app/presentation/blocs/profile_cubit.dart';
 import 'package:connectme_app/services/device_info_service.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
 
 import 'data/datasources/firestore_post_datasource.dart';
@@ -86,10 +85,7 @@ void setupDependencies() {
   getIt.registerLazySingleton<DeviceInfoService>(() => DeviceInfoService());
 
   getIt.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(
-      getIt<FirestoreService>(),
-      FirebaseStorage.instance,
-    ),
+    () => ProfileRepositoryImpl(getIt<FirestoreService>()),
   );
 
   getIt.registerLazySingleton<GetProfile>(

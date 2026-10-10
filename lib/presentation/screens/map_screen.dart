@@ -12,13 +12,13 @@ class MapScreen extends StatelessWidget {
     ),
     _MemberLocation(
       name: 'Omar Khalil',
-      city: 'London',
-      position: LatLng(51.5074, -0.1278),
+      city: 'Alexandria',
+      position: LatLng(31.2001, 29.9187),
     ),
     _MemberLocation(
       name: 'Sara Ahmed',
-      city: 'New York',
-      position: LatLng(40.7128, -74.0060),
+      city: 'Luxor',
+      position: LatLng(25.6872, 32.6396),
     ),
   ];
 

@@ -93,6 +93,8 @@ class ProfileCubit extends Cubit<ProfileState> {
       final image = await _imagePicker.pickImage(
         source: source,
         imageQuality: 80,
+        maxWidth: 600,
+        maxHeight: 600,
       );
 
       if (image == null) {

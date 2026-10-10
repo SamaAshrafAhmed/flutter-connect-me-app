@@ -1,6 +1,5 @@
+import 'dart:convert';
 import 'dart:io';
-
-import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/profile_repository.dart';
@@ -9,32 +8,29 @@ import '../models/user_model.dart';
 
 class ProfileRepositoryImpl implements ProfileRepository {
   final FirestoreService _firestoreService;
-  final FirebaseStorage _storage;
 
-  ProfileRepositoryImpl(this._firestoreService, this._storage);
+  ProfileRepositoryImpl(this._firestoreService);
 
   @override
   Future<UserEntity> updateProfileImage({
     required UserEntity user,
     required String imagePath,
   }) async {
-    final imageReference = _storage
-        .ref()
-        .child('profile_images')
-        .child('${user.id}.jpg');
-    await imageReference.putFile(File(imagePath));
-    final imageUrl = await imageReference.getDownloadURL();
+    // Store a resized, compressed image as a data URI in the user's Firestore
+    // document so the profile has no dependency on Firebase Storage.
+    final imageBytes = await File(imagePath).readAsBytes();
+    final imageDataUri = 'data:image/jpeg;base64,${base64Encode(imageBytes)}';
 
     await _firestoreService.updateUser(
       userId: user.id,
-      data: {'profileImageUrl': imageUrl},
+      data: {'profileImageUrl': imageDataUri},
     );
 
     return UserModel(
       id: user.id,
       fullName: user.fullName,
       email: user.email,
-      profileImageUrl: imageUrl,
+      profileImageUrl: imageDataUri,
     );
   }
 }

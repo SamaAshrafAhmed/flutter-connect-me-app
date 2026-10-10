@@ -70,6 +70,11 @@ class HomeView extends StatelessWidget {
             icon: const Icon(Icons.map_outlined),
             tooltip: 'Community map',
           ),
+          IconButton(
+            onPressed: () => context.read<AuthCubit>().logout(),
+            icon: const Icon(Icons.logout),
+            tooltip: 'Log out',
+          ),
         ],
       ),
 

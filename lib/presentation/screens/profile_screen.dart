@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -73,6 +75,7 @@ class ProfileView extends StatelessWidget {
     bool isUploading = false,
   }) {
     final screenWidth = MediaQuery.sizeOf(context).width;
+    final profileImage = _profileImage(user.profileImageUrl);
 
     return SingleChildScrollView(
       padding: EdgeInsets.all(screenWidth * 0.06),
@@ -82,11 +85,7 @@ class ProfileView extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 60,
-                backgroundImage:
-                    user.profileImageUrl != null &&
-                        user.profileImageUrl!.isNotEmpty
-                    ? NetworkImage(user.profileImageUrl!)
-                    : null,
+                backgroundImage: profileImage,
                 child:
                     user.profileImageUrl == null ||
                         user.profileImageUrl!.isEmpty
@@ -142,6 +141,19 @@ class ProfileView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  ImageProvider<Object>? _profileImage(String? imageValue) {
+    if (imageValue == null || imageValue.isEmpty) {
+      return null;
+    }
+
+    if (imageValue.startsWith('data:image/')) {
+      final encodedImage = imageValue.substring(imageValue.indexOf(',') + 1);
+      return MemoryImage(base64Decode(encodedImage));
+    }
+
+    return NetworkImage(imageValue);
   }
 
   void _showImageOptions(BuildContext context) {
