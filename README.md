@@ -1,17 +1,129 @@
-# connectme_app
+# ConnectMe Community App
 
-A new Flutter project.
+ConnectMe is a production-oriented Flutter community app for sharing posts,
+viewing community members on a map, and managing a device-aware profile.
+Firebase Authentication and Cloud Firestore provide the backend, while
+biometric authentication protects access to profile details.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Email/password sign up and login with persisted Firebase Auth sessions.
+- Sign-up validation for name, email, password, and password confirmation.
+- Realtime Firestore community feed with post creation and friendly error states.
+- Biometric gate before opening the profile.
+- Gallery/camera profile image selection and Firebase Storage upload.
+- Device model and operating system information via `device_info_plus`.
+- Community map with member markers and info windows.
+- Responsive layouts using `MediaQuery` and scrollable forms.
 
-A few resources to get you started if this is your first Flutter project:
+## Architecture
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+The project follows Clean Architecture:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```text
+lib/
+├── core/errors/                 Shared failure types
+├── data/
+│   ├── datasources/             Firestore and local post sources
+│   ├── models/                  JSON models and User Builder
+│   └── repositories/            Repository implementations
+├── domain/
+│   ├── entities/                Framework-independent business objects
+│   ├── repositories/            Repository contracts
+│   └── usecases/                Application actions
+├── presentation/
+│   ├── blocs/                   Auth, post, and profile Cubits
+│   ├── screens/                 Feature screens
+│   └── widgets/                 Reusable UI components
+└── services/                    Firebase, biometric, and device services
+```
+
+Design patterns are applied deliberately:
+
+- **Singleton:** `FirestoreService.instance` is registered once in GetIt.
+- **Factory:** `PostDataSourceFactory` chooses the remote Firestore or local
+  post source.
+- **Builder:** `UserBuilder` only sets profile fields supplied by the caller.
+- **Dependency injection:** all services, repositories, use cases, and Cubits
+  are registered in `lib/injection.dart`.
+
+## Setup
+
+1. Install Flutter (Dart 3.13 or newer) and configure a Firebase project.
+2. Run `flutterfire configure` to generate `lib/firebase_options.dart` and
+   the native Firebase configuration files for your project.
+3. Enable Email/Password Authentication, Firestore, and Firebase Storage.
+4. Add a Google Maps API key:
+
+   ```bash
+   flutter build apk --release \
+     -- -PGOOGLE_MAPS_API_KEY=your-key
+   ```
+
+   Restrict the key to the Android package and Maps SDK for Android in Google
+   Cloud Console. Configure the equivalent key in `ios/Runner/AppDelegate.swift`
+   before an iOS build.
+5. Install dependencies and validate the project:
+
+   ```bash
+   flutter pub get
+   dart format lib
+   flutter analyze
+   flutter test
+   ```
+
+### Required permissions
+
+- Android `USE_BIOMETRIC` for the biometric profile gate.
+- Android camera/gallery access is requested by `image_picker` when needed.
+- iOS `NSCameraUsageDescription` and `NSPhotoLibraryUsageDescription` should
+  be added to `ios/Runner/Info.plist` when building for iOS.
+- Google Maps requires the platform API key described above.
+
+## Firebase App Distribution beta release
+
+The APK must be uploaded from a trusted CI or release workstation; do not
+commit service-account keys or API keys to Git.
+
+1. Install and authenticate the Firebase CLI:
+
+   ```bash
+   npm install -g firebase-tools
+   firebase login
+   ```
+
+2. Build a release APK using the production Firebase configuration:
+
+   ```bash
+   flutter pub get
+   flutter build apk --release --build-number=1
+   ```
+
+3. Upload the artifact and invite at least two testers:
+
+   ```bash
+   firebase appdistribution:distribute \
+     build/app/outputs/flutter-apk/app-release.apk \
+     --app YOUR_ANDROID_FIREBASE_APP_ID \
+     --testers tester-one@example.com,tester-two@example.com \
+     --release-notes "ConnectMe v1.0 beta"
+   ```
+
+4. In Firebase Console → App Distribution, verify the release, both tester
+   emails, and the invitation status. Each tester should accept the invitation,
+   install the Firebase App Tester app, and install the release on a physical
+   Android device.
+5. For the final submission, add the following evidence under
+   `docs/screenshots/` and link it here:
+
+   - `login.png` and `signup.png`
+   - `home-feed.png`
+   - `biometric-prompt.png`
+   - `profile.png`
+   - `community-map.png`
+   - `app-distribution.png`
+   - `tester-invitation.png`
+
+The repository intentionally does not contain tester email addresses, API
+keys, or distribution screenshots. Those are environment-specific release
+evidence and must be captured from the delivery Firebase project.

@@ -1,5 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectme_app/data/repositories/profile_repository_impl.dart';
+import 'package:connectme_app/domain/repositories/profile_repository.dart';
+import 'package:connectme_app/domain/usecases/get_profile.dart';
+import 'package:connectme_app/domain/usecases/update_profile_image.dart';
+import 'package:connectme_app/presentation/blocs/profile_cubit.dart';
+import 'package:connectme_app/services/device_info_service.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+
 import 'data/datasources/firestore_post_datasource.dart';
 import 'data/datasources/local_post_datasource.dart';
 import 'data/repositories/auth_repository_impl.dart';
@@ -13,6 +21,7 @@ import 'presentation/blocs/auth_cubit.dart';
 import 'presentation/blocs/post_cubit.dart';
 import 'services/auth_service.dart';
 import 'services/firestore_service.dart';
+import 'services/biometric_service.dart';
 
 final getIt = GetIt.instance;
 
@@ -70,5 +79,32 @@ void setupDependencies() {
 
   getIt.registerFactory<PostCubit>(
     () => PostCubit(getIt<CreatePost>(), getIt<GetPosts>()),
+  );
+
+  getIt.registerLazySingleton<BiometricService>(() => BiometricService());
+
+  getIt.registerLazySingleton<DeviceInfoService>(() => DeviceInfoService());
+
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      getIt<FirestoreService>(),
+      FirebaseStorage.instance,
+    ),
+  );
+
+  getIt.registerLazySingleton<GetProfile>(
+    () => GetProfile(getIt<AuthRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateProfileImage>(
+    () => UpdateProfileImage(getIt<ProfileRepository>()),
+  );
+
+  getIt.registerFactory<ProfileCubit>(
+    () => ProfileCubit(
+      getIt<GetProfile>(),
+      getIt<UpdateProfileImage>(),
+      getIt<DeviceInfoService>(),
+    ),
   );
 }

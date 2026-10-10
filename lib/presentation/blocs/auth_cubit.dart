@@ -8,12 +8,19 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository _authRepository;
   new(this._authRepository) : super(AuthInitialState());
 
-  void checkAuthStatus() {
-    final UserEntity? user = _authRepository.getCurrentUser();
-    if (user == null) {
-      emit(AuthUnAuthenticated());
-    } else {
-      emit(AuthAuthenticated(user));
+  Future<void> checkAuthStatus() async {
+    try {
+      emit(AuthLoadingState());
+
+      final user = await _authRepository.getCurrentUser();
+
+      if (user != null) {
+        emit(AuthAuthenticated(user));
+      } else {
+        emit(AuthUnAuthenticated());
+      }
+    } catch (e) {
+      emit(AuthError('Unable to restore your session. Please try again.'));
     }
   }
 

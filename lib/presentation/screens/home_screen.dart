@@ -1,5 +1,8 @@
 import 'package:connectme_app/presentation/blocs/states/auth_states.dart';
 import 'package:connectme_app/presentation/blocs/states/post_states.dart';
+import 'package:connectme_app/presentation/screens/map_screen.dart';
+import 'package:connectme_app/presentation/screens/profile_screen.dart';
+import 'package:connectme_app/services/biometric_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -41,10 +44,31 @@ class HomeView extends StatelessWidget {
         title: const Text('ConnectMe'),
         actions: [
           IconButton(
-            onPressed: () {
-              // Profile navigation will be added later.
+            onPressed: () async {
+              final biometricService = getIt<BiometricService>();
+
+              final authenticated = await biometricService.authenticate();
+
+              if (!authenticated || !context.mounted) {
+                return;
+              }
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
             },
             icon: const Icon(Icons.person),
+          ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MapScreen()),
+              );
+            },
+            icon: const Icon(Icons.map_outlined),
+            tooltip: 'Community map',
           ),
         ],
       ),

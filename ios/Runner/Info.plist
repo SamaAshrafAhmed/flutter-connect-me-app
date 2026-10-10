@@ -24,6 +24,10 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ConnectMe uses the camera to update your profile photo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ConnectMe uses your photo library to update your profile photo.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

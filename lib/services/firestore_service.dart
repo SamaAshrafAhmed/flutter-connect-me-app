@@ -27,6 +27,9 @@ class FirestoreService {
     required String userId,
     required Map<String, dynamic> data,
   }) async {
-    await _firestore.collection("users").doc(userId).update(data);
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .set(data, SetOptions(merge: true));
   }
 }

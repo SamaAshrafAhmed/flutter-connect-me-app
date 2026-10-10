@@ -9,13 +9,19 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthService _authService;
   final FirestoreService _firestoreService;
   new(this._authService, this._firestoreService);
-  
+
   @override
-  UserEntity? getCurrentUser() {
+  Future<UserEntity?> getCurrentUser() async {
     final firebaseUser = _authService.currentUser;
 
     if (firebaseUser == null) {
       return null;
+    }
+
+    final userData = await _firestoreService.getUser(userId: firebaseUser.uid);
+
+    if (userData != null) {
+      return UserModel.fromJson({...userData, 'id': firebaseUser.uid});
     }
 
     return UserBuilder()

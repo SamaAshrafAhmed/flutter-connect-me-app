@@ -23,7 +23,7 @@ class PostModel extends Post {
     }
     return PostModel(
       id: json['id'] ?? '',
-      authorId: json['auhtorId'] ?? '',
+      authorId: json['authorId'] ?? '',
       authorName: json['authorName'] ?? '',
       content: json['content'] ?? '',
       timestamp: postTime,
@@ -32,7 +32,7 @@ class PostModel extends Post {
 
   Map<String, dynamic> toJson() => {
     'id': id,
-    'auhtorId': authorId,
+    'authorId': authorId,
     'authorName': authorName,
     'content': content,
     'timestamp': Timestamp.fromDate(timestamp),

@@ -7,9 +7,7 @@ class LocalPostDataSource {
     return _cachedPosts;
   }
 
-  Future<void> savePosts(
-    List<PostModel> posts,
-  ) async {
+  Future<void> savePosts(List<PostModel> posts) async {
     _cachedPosts = posts;
   }
 

@@ -20,7 +20,7 @@ class PostRepositoryImpl implements PostRepository {
       content: post.content,
       timestamp: post.timestamp,
     );
-    dataSource.createPost(model.toJson());
+    await dataSource.createPost(model.toJson());
   }
 
   @override
